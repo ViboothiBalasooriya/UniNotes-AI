@@ -1,0 +1,31 @@
+# Environment variables & secrets
+.env
+*.env
+serviceAccountKey.json
+google-services.json
+
+# Node.js
+middleware/node_modules/
+middleware/npm-debug.log*
+
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+uninotes_ai/build/
+uninotes_ai/.dart_tool/
+uninotes_ai/.flutter-plugins
+uninotes_ai/.flutter-plugins-dependencies
+uninotes_ai/.pub-cache/
+uninotes_ai/.pub/
+uninotes_ai/android/.gradle/
+uninotes_ai/android/local.properties
+
+# OS & IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

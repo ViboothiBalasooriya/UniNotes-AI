@@ -1,0 +1,92 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Helper Functions ───────────────────────────────────────────────────────
+
+    // Check if the requesting user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if the requesting user has the admin role
+    function isAdmin() {
+      return isAuthenticated() &&
+        exists(/databases/$(database)/documents/userRoles/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/userRoles/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Check if the requesting user is the owner of a document
+    function isOwner(ownerId) {
+      return isAuthenticated() && request.auth.uid == ownerId;
+    }
+
+    // ─── Universities ───────────────────────────────────────────────────────────
+    match /universities/{universityId} {
+      allow read: if isAuthenticated();
+      allow create, update, delete: if isAdmin();
+
+      // ─── Faculties ─────────────────────────────────────────────────────────
+      match /faculties/{facultyId} {
+        allow read: if isAuthenticated();
+        allow create, update, delete: if isAdmin();
+
+        // ─── Departments ────────────────────────────────────────────────────
+        match /departments/{departmentId} {
+          allow read: if isAuthenticated();
+          allow create, update, delete: if isAdmin();
+
+          // ─── Courses ──────────────────────────────────────────────────────
+          match /courses/{courseId} {
+            allow read: if isAuthenticated();
+            allow create, update, delete: if isAdmin();
+          }
+        }
+      }
+    }
+
+    // ─── Notes ─────────────────────────────────────────────────────────────────
+    match /notes/{noteId} {
+      // Any authenticated user can read approved notes
+      allow read: if isAuthenticated() &&
+        (resource.data.status == 'approved' || isAdmin() || isOwner(resource.data.uploaderId));
+
+      // Any authenticated user can upload (create) a note
+      // Status is forced to 'pending' on creation
+      allow create: if isAuthenticated() &&
+        request.resource.data.status == 'pending' &&
+        request.resource.data.uploaderId == request.auth.uid;
+
+      // Only admin can update status; owner can update title/description only
+      allow update: if isAdmin() ||
+        (isOwner(resource.data.uploaderId) &&
+          request.resource.data.status == resource.data.status); // owner cannot change status
+
+      // Only admin can delete
+      allow delete: if isAdmin();
+    }
+
+    // ─── Saved Notes ────────────────────────────────────────────────────────────
+    match /savedNotes/{userId}/notes/{noteId} {
+      // Users can only access their own saved notes
+      allow read, write: if isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // ─── User Roles ─────────────────────────────────────────────────────────────
+    match /userRoles/{userId} {
+      // Anyone authenticated can read their own role (for role checks)
+      allow read: if isAuthenticated() && request.auth.uid == userId;
+
+      // Admin can read all roles
+      allow read: if isAdmin();
+
+      // Only via server-side (Admin SDK via middleware) or admin can write
+      allow write: if isAdmin();
+
+      // Allow creation during registration (when role doesn't exist yet)
+      allow create: if isAuthenticated() &&
+        request.auth.uid == userId &&
+        request.resource.data.role == 'student'; // can only create as student
+    }
+  }
+}
