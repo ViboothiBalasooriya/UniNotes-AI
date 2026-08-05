@@ -33,10 +33,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             _emailController.text.trim(),
             _passwordController.text,
           );
+      if (mounted) context.go('/universities');
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Login failed: ${e.toString()}'), backgroundColor: AppColors.error),
+          SnackBar(
+            content: Text('Login failed: ${e.toString()}'),
+            backgroundColor: AppColors.error,
+          ),
         );
       }
     } finally {
@@ -48,12 +52,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     setState(() => _isLoading = true);
     try {
       await ref.read(authNotifierProvider.notifier).signInWithGoogle();
+      if (mounted) context.go('/universities');
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Google sign-in failed: ${e.toString()}'), backgroundColor: AppColors.error),
+          SnackBar(
+            content: Text('Google sign-in failed: ${e.toString()}'),
+            backgroundColor: AppColors.error,
+          ),
         );
       }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _signInAsDemo({bool isAdmin = false}) async {
+    setState(() => _isLoading = true);
+    try {
+      await ref.read(authNotifierProvider.notifier).signInAnonymously(isAdmin: isAdmin);
+      if (mounted) context.go('/universities');
+    } catch (e) {
+      if (mounted) context.go('/universities');
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -181,6 +201,36 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     label: const Text('Continue with Google'),
                   ),
+                ),
+                const SizedBox(height: 16),
+
+                // ─── Demo Mode Buttons ──────────────────────────────────────────
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: _isLoading ? null : () => _signInAsDemo(isAdmin: false),
+                        icon: const Icon(Icons.explore_outlined, size: 18),
+                        label: const Text('Demo Student'),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          side: BorderSide(color: AppColors.primary.withValues(alpha: 0.5)),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: _isLoading ? null : () => _signInAsDemo(isAdmin: true),
+                        icon: const Icon(Icons.admin_panel_settings_outlined, size: 18),
+                        label: const Text('Demo Admin'),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          side: BorderSide(color: AppColors.accent.withValues(alpha: 0.5)),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 32),
 

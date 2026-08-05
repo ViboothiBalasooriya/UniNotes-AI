@@ -94,6 +94,26 @@ class AuthNotifier extends AsyncNotifier<User?> {
     });
   }
 
+  // ─── Anonymous / Guest Login ──────────────────────────────────────────────────
+  Future<User?> signInAnonymously({bool isAdmin = false}) async {
+    state = const AsyncLoading();
+    User? user;
+    try {
+      final credential = await _auth.signInAnonymously();
+      user = credential.user;
+      if (user != null) {
+        await ref.read(firebaseServiceProvider).setUserRole(
+          user.uid,
+          isAdmin ? AppConstants.roleAdmin : AppConstants.roleStudent,
+        );
+      }
+    } catch (e) {
+      debugPrint('Anonymous auth fallback: $e');
+    }
+    state = AsyncData(user);
+    return user;
+  }
+
   // ─── Sign Out ─────────────────────────────────────────────────────────────────
   Future<void> signOut() async {
     await _googleSignIn.signOut();

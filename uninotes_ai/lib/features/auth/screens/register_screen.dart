@@ -39,6 +39,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             password: _passwordController.text,
             displayName: _nameController.text.trim(),
           );
+      if (mounted) context.go('/universities');
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
