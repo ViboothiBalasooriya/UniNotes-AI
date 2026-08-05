@@ -19,7 +19,12 @@ final authStateProvider = StreamProvider<User?>((ref) {
 final userRoleProvider = FutureProvider.family<UserRole?, String>((ref, uid) async {
   final isDemoAdmin = ref.watch(isDemoAdminProvider);
   if (isDemoAdmin) {
-    return UserRole(uid: uid, role: AppConstants.roleAdmin, assignedAt: DateTime.now());
+    return UserRole(
+      uid: uid,
+      role: AppConstants.roleAdmin,
+      assignedAt: DateTime.now(),
+      assignedBy: 'system',
+    );
   }
   final firebaseService = ref.read(firebaseServiceProvider);
   return await firebaseService.getUserRole(uid);
