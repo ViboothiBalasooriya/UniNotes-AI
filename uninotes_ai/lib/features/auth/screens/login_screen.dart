@@ -189,12 +189,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   child: OutlinedButton.icon(
                     key: const Key('google_signin_btn'),
                     onPressed: _isLoading ? null : _signInWithGoogle,
-                    icon: Image.network(
-                      'https://www.google.com/favicon.ico',
-                      width: 20,
-                      height: 20,
-                      errorBuilder: (_, __, ___) => const Icon(Icons.g_mobiledata, size: 20),
-                    ),
+                    icon: const Icon(Icons.g_mobiledata_rounded, size: 24, color: AppColors.primaryLight),
                     label: const Text('Continue with Google'),
                   ),
                 ),
