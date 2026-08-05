@@ -46,7 +46,20 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error', message: err.message });
 });
 
-// ─── Start Server ─────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`✅ UniNotes AI Middleware running on port ${PORT}`);
-});
+// ─── Start Server with Port Fallback ──────────────────────────────────────────
+function startServer(portToUse) {
+  const server = app.listen(portToUse, () => {
+    console.log(`✅ UniNotes AI Middleware running on port ${portToUse}`);
+  });
+
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.warn(`⚠️ Port ${portToUse} is in use. Trying port ${portToUse + 1}...`);
+      startServer(portToUse + 1);
+    } else {
+      console.error('Server error:', err);
+    }
+  });
+}
+
+startServer(Number(PORT));
