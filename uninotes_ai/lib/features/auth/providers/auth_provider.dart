@@ -35,7 +35,9 @@ final authNotifierProvider = AsyncNotifierProvider<AuthNotifier, User?>(() => Au
 
 class AuthNotifier extends AsyncNotifier<User?> {
   final _auth = FirebaseAuth.instance;
-  final _googleSignIn = GoogleSignIn();
+  final _googleSignIn = kIsWeb 
+      ? GoogleSignIn(clientId: 'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com')
+      : GoogleSignIn();
 
   @override
   Future<User?> build() async {
