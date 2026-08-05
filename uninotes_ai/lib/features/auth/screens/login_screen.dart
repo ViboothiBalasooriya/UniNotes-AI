@@ -69,10 +69,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Future<void> _signInAsDemo({bool isAdmin = false}) async {
     setState(() => _isLoading = true);
-    ref.read(isDemoUserProvider.notifier).state = true;
-    ref.read(isDemoAdminProvider.notifier).state = isAdmin;
-    if (mounted) context.go('/universities');
-    if (mounted) setState(() => _isLoading = false);
+    try {
+      // 1. Sign in anonymously so Firestore 'isAuthenticated()' rules pass for reads.
+      // We pass isAdmin: false because Firestore rules reject creating 'admin' roles from the client.
+      await ref.read(authNotifierProvider.notifier).signInAnonymously(isAdmin: false);
+      
+      // 2. Set local demo providers so the UI shows Admin panels and bypasses local role checks.
+      ref.read(isDemoUserProvider.notifier).state = true;
+      ref.read(isDemoAdminProvider.notifier).state = isAdmin;
+      
+      if (mounted) context.go('/universities');
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Demo Login failed: ${e.toString()}'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   @override
