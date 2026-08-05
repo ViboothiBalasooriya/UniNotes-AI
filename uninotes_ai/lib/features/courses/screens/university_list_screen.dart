@@ -28,10 +28,17 @@ class UniversityListScreen extends ConsumerWidget {
             if (user?.displayName != null)
               Text(
                 'Hello, ${user!.displayName!.split(' ').first} 👋',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: AppColors.textSecondaryDark),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textSecondaryDark),
+              )
+            else if (ref.watch(isDemoAdminProvider))
+              Text(
+                'Hello, Demo Admin 👋',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textSecondaryDark),
+              )
+            else if (ref.watch(isDemoUserProvider))
+              Text(
+                'Hello, Demo Student 👋',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textSecondaryDark),
               ),
           ],
         ),
@@ -196,6 +203,14 @@ class _EmptyUniversities extends StatelessWidget {
 class _AdminIconButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (ref.watch(isDemoAdminProvider)) {
+      return IconButton(
+        icon: const Icon(Icons.admin_panel_settings_outlined),
+        tooltip: 'Admin Panel',
+        onPressed: () => context.push('/admin'),
+      );
+    }
+
     final authState = ref.watch(authStateProvider);
     final user = authState.valueOrNull;
     if (user == null) return const SizedBox.shrink();
@@ -234,18 +249,25 @@ class _ProfileMenu extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authStateProvider).valueOrNull;
+    final isDemoAdmin = ref.watch(isDemoAdminProvider);
+    final isDemoUser = ref.watch(isDemoUserProvider);
+
+    String avatarChar = '?';
+    if (user?.displayName?.isNotEmpty == true) {
+      avatarChar = user!.displayName![0].toUpperCase();
+    } else if (isDemoAdmin) {
+      avatarChar = 'A';
+    } else if (isDemoUser) {
+      avatarChar = 'D';
+    }
+
     return PopupMenuButton<String>(
       icon: CircleAvatar(
         radius: 16,
         backgroundColor: AppColors.primary,
         backgroundImage: user?.photoURL != null ? NetworkImage(user!.photoURL!) : null,
         child: user?.photoURL == null
-            ? Text(
-                (user?.displayName?.isNotEmpty == true)
-                    ? user!.displayName![0].toUpperCase()
-                    : '?',
-                style: const TextStyle(color: Colors.white, fontSize: 14),
-              )
+            ? Text(avatarChar, style: const TextStyle(color: Colors.white, fontSize: 14))
             : null,
       ),
       itemBuilder: (_) => [
