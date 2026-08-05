@@ -28,7 +28,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       final isAuthenticated = authState.valueOrNull != null;
       final currentPath = state.uri.path;
 
-      if (isLoading) return '/splash';
+      if (isLoading && currentPath == '/splash') return null;
 
       final publicRoutes = ['/splash', '/login', '/register'];
       if (!isAuthenticated && !publicRoutes.contains(currentPath)) {
