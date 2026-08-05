@@ -6,6 +6,10 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/services/firebase_service.dart';
 import '../../../shared/models/user_role.dart';
 
+// ─── Demo Mode Providers ──────────────────────────────────────────────────────
+final isDemoUserProvider = StateProvider<bool>((ref) => false);
+final isDemoAdminProvider = StateProvider<bool>((ref) => false);
+
 // ─── Auth Stream Provider ─────────────────────────────────────────────────────
 final authStateProvider = StreamProvider<User?>((ref) {
   return FirebaseAuth.instance.authStateChanges();
@@ -13,6 +17,10 @@ final authStateProvider = StreamProvider<User?>((ref) {
 
 // ─── Current User Role Provider ───────────────────────────────────────────────
 final userRoleProvider = FutureProvider.family<UserRole?, String>((ref, uid) async {
+  final isDemoAdmin = ref.watch(isDemoAdminProvider);
+  if (isDemoAdmin) {
+    return UserRole(uid: uid, role: AppConstants.roleAdmin, assignedAt: DateTime.now());
+  }
   final firebaseService = ref.read(firebaseServiceProvider);
   return await firebaseService.getUserRole(uid);
 });
@@ -117,8 +125,12 @@ class AuthNotifier extends AsyncNotifier<User?> {
 
   // ─── Sign Out ─────────────────────────────────────────────────────────────────
   Future<void> signOut() async {
-    await _googleSignIn.signOut();
-    await _auth.signOut();
+    ref.read(isDemoUserProvider.notifier).state = false;
+    ref.read(isDemoAdminProvider.notifier).state = false;
+    try {
+      await _googleSignIn.signOut();
+      await _auth.signOut();
+    } catch (_) {}
     state = const AsyncData(null);
   }
 

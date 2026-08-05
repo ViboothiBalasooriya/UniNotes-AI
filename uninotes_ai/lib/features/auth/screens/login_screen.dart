@@ -69,14 +69,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Future<void> _signInAsDemo({bool isAdmin = false}) async {
     setState(() => _isLoading = true);
-    try {
-      await ref.read(authNotifierProvider.notifier).signInAnonymously(isAdmin: isAdmin);
-      if (mounted) context.go('/universities');
-    } catch (e) {
-      if (mounted) context.go('/universities');
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
+    ref.read(isDemoUserProvider.notifier).state = true;
+    ref.read(isDemoAdminProvider.notifier).state = isAdmin;
+    if (mounted) context.go('/universities');
+    if (mounted) setState(() => _isLoading = false);
   }
 
   @override

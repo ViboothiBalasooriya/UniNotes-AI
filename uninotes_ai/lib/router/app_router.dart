@@ -19,12 +19,13 @@ import '../shared/models/note.dart';
 // ─── Router Provider ──────────────────────────────────────────────────────────
 final appRouterProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
+  final isDemo = ref.watch(isDemoUserProvider);
 
   return GoRouter(
     initialLocation: '/splash',
     redirect: (context, state) {
-      final isLoading = authState.isLoading;
-      final isAuthenticated = authState.valueOrNull != null;
+      final isLoading = authState.isLoading && !isDemo;
+      final isAuthenticated = authState.valueOrNull != null || isDemo;
       final currentPath = state.uri.path;
 
       if (isLoading && currentPath == '/splash') return null;
