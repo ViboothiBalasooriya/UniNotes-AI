@@ -8,14 +8,16 @@ import '../../../core/theme/app_theme.dart';
 import '../../../features/auth/providers/auth_provider.dart';
 import '../../../shared/models/university.dart';
 
+final universitiesProvider = StreamProvider.autoDispose((ref) {
+  return ref.read(firebaseServiceProvider).streamUniversities();
+});
+
 class UniversityListScreen extends ConsumerWidget {
   const UniversityListScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final universitiesStream = ref.watch(
-      StreamProvider((ref) => ref.read(firebaseServiceProvider).streamUniversities()),
-    );
+    final universitiesStream = ref.watch(universitiesProvider);
     final authState = ref.watch(authStateProvider);
     final user = authState.valueOrNull;
 
