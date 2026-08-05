@@ -93,7 +93,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                 // ─── Email Field ───────────────────────────────────────────────
                 TextFormField(
-                  id: 'login_email',
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration(
@@ -110,7 +109,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                 // ─── Password Field ────────────────────────────────────────────
                 TextFormField(
-                  id: 'login_password',
                   controller: _passwordController,
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(

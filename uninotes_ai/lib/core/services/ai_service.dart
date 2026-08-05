@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import '../constants/api_constants.dart';
-import '../../shared/models/user_role.dart';
 import '../../shared/models/note.dart';
 
 final aiServiceProvider = Provider<AiService>((ref) => AiService());

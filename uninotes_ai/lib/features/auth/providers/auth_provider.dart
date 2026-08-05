@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/constants/app_constants.dart';
-import '../../core/services/firebase_service.dart';
-import '../../shared/models/user_role.dart';
+import '../../../core/constants/app_constants.dart';
+import '../../../core/services/firebase_service.dart';
+import '../../../shared/models/user_role.dart';
 
 // ─── Auth Stream Provider ─────────────────────────────────────────────────────
 final authStateProvider = StreamProvider<User?>((ref) {

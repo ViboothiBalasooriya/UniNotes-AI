@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/services/firebase_service.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../shared/models/academic_hierarchy.dart';
 
 class FacultyScreen extends ConsumerWidget {
   final String universityId;

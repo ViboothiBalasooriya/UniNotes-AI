@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/theme/app_colors.dart';
@@ -157,15 +158,13 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
   }
 
   Future<void> _extractTextFromPdf(PdfDocumentLoadedDetails details) async {
-    // Syncfusion PDF viewer provides text extraction
-    final buffer = StringBuffer();
-    final pageCount = details.document.pages.count;
-    for (int i = 0; i < pageCount && i < 20; i++) {
-      final page = details.document.pages[i];
-      final extracted = page.extractText();
-      buffer.write(extracted);
+    try {
+      final extractor = PdfTextExtractor(details.document);
+      final extracted = extractor.extractText();
+      setState(() => _extractedText = extracted);
+    } catch (e) {
+      // Ignore if text extraction fails on scanned/image-only PDFs
     }
-    setState(() => _extractedText = buffer.toString());
   }
 
   Future<void> _summarize() async {

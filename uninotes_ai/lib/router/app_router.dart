@@ -6,9 +6,7 @@ import '../features/auth/screens/splash_screen.dart';
 import '../features/auth/screens/login_screen.dart';
 import '../features/auth/screens/register_screen.dart';
 import '../features/courses/screens/university_list_screen.dart';
-import '../features/courses/screens/faculty_screen.dart';
-import '../features/courses/screens/department_screen.dart';
-import '../features/courses/screens/course_screen.dart';
+import '../features/courses/screens/faculty_department_course_screens.dart';
 import '../features/notes/screens/notes_list_screen.dart';
 import '../features/notes/screens/pdf_viewer_screen.dart';
 import '../features/notes/screens/upload_screen.dart';
@@ -18,9 +16,6 @@ import '../features/admin/screens/course_editor_screen.dart';
 import '../features/admin/screens/moderation_screen.dart';
 import '../features/admin/screens/role_management_screen.dart';
 import '../shared/models/note.dart';
-
-// ─── Theme Mode Provider ───────────────────────────────────────────────────────
-final themeModeProvider = StateProvider<ThemeMode>((ref) => ThemeMode.dark);
 
 // ─── Router Provider ──────────────────────────────────────────────────────────
 final appRouterProvider = Provider<GoRouter>((ref) {

@@ -6,42 +6,14 @@ import '../../../core/theme/app_colors.dart';
 import '../../../features/auth/providers/auth_provider.dart';
 import '../../../shared/models/note.dart';
 
-class SavedNotesScreen extends ConsumerWidget {
+class SavedNotesScreen extends ConsumerStatefulWidget {
   const SavedNotesScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(authStateProvider).valueOrNull;
-
-    if (user == null) {
-      return const Scaffold(body: Center(child: Text('Please log in')));
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Saved Notes'),
-      ),
-      body: FutureProvider.autoDispose<List<Note>>((ref) {
-        return ref.read(firebaseServiceProvider).getSavedNotes(user.uid);
-      }).when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) =>
-            Center(child: Text('Error: $e', style: const TextStyle(color: AppColors.error))),
-        data: (_) => const SizedBox.shrink(),
-      ),
-    );
-  }
+  ConsumerState<SavedNotesScreen> createState() => _SavedNotesScreenState();
 }
 
-// ─── Saved Notes Screen (using FutureBuilder) ─────────────────────────────────
-class SavedNotesScreenV2 extends ConsumerStatefulWidget {
-  const SavedNotesScreenV2({super.key});
-
-  @override
-  ConsumerState<SavedNotesScreenV2> createState() => _SavedNotesScreenState();
-}
-
-class _SavedNotesScreenState extends ConsumerState<SavedNotesScreenV2> {
+class _SavedNotesScreenState extends ConsumerState<SavedNotesScreen> {
   late Future<List<Note>> _savedNotesFuture;
 
   @override
@@ -54,6 +26,8 @@ class _SavedNotesScreenState extends ConsumerState<SavedNotesScreenV2> {
     final user = ref.read(authStateProvider).valueOrNull;
     if (user != null) {
       _savedNotesFuture = ref.read(firebaseServiceProvider).getSavedNotes(user.uid);
+    } else {
+      _savedNotesFuture = Future.value([]);
     }
   }
 

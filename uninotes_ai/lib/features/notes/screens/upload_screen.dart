@@ -8,7 +8,6 @@ import '../../../core/services/firebase_service.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/models/note.dart';
-import 'package:uuid/uuid.dart';
 
 class UploadScreen extends ConsumerStatefulWidget {
   final String courseId;

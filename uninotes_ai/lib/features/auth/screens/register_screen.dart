@@ -83,7 +83,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
                 // ─── Full Name ─────────────────────────────────────────────────
                 TextFormField(
-                  id: 'register_name',
                   controller: _nameController,
                   textCapitalization: TextCapitalization.words,
                   decoration: const InputDecoration(
@@ -100,7 +99,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
                 // ─── Email ─────────────────────────────────────────────────────
                 TextFormField(
-                  id: 'register_email',
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration(
@@ -119,7 +117,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
                 // ─── Password ──────────────────────────────────────────────────
                 TextFormField(
-                  id: 'register_password',
                   controller: _passwordController,
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
@@ -140,7 +137,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
                 // ─── Confirm Password ──────────────────────────────────────────
                 TextFormField(
-                  id: 'register_confirm_password',
                   controller: _confirmPasswordController,
                   obscureText: _obscureConfirm,
                   decoration: InputDecoration(
