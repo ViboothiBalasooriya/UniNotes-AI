@@ -8,17 +8,21 @@ function initializeFirebase() {
   if (admin.apps.length > 0) return; // Prevent re-initialization
 
   const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
-  if (!serviceAccountJson) {
-    throw new Error('FIREBASE_SERVICE_ACCOUNT_JSON environment variable is not set.');
+  if (!serviceAccountJson || serviceAccountJson.trim() === '') {
+    console.warn('⚠️ Warning: FIREBASE_SERVICE_ACCOUNT_JSON is not set in middleware/.env.');
+    console.warn('⚠️ Firebase Admin SDK features will require service account JSON in production/Render.');
+    return;
   }
 
-  const serviceAccount = JSON.parse(serviceAccountJson);
-
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
-
-  console.log('🔥 Firebase Admin SDK initialized successfully.');
+  try {
+    const serviceAccount = JSON.parse(serviceAccountJson);
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+    });
+    console.log('🔥 Firebase Admin SDK initialized successfully.');
+  } catch (error) {
+    console.warn('⚠️ Warning: Invalid FIREBASE_SERVICE_ACCOUNT_JSON format:', error.message);
+  }
 }
 
 /**
