@@ -11,18 +11,28 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Lock to portrait mode
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
+  try {
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  } catch (_) {}
 
-  // Load .env
-  await dotenv.load(fileName: '.env');
+  // Load .env with fallback
+  try {
+    await dotenv.load(fileName: '.env');
+  } catch (e) {
+    debugPrint('Dotenv load warning: $e');
+  }
 
-  // Initialize Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // Initialize Firebase with fallback
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    debugPrint('Firebase init warning: $e');
+  }
 
   runApp(
     const ProviderScope(
