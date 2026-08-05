@@ -7,8 +7,6 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../features/auth/providers/auth_provider.dart';
 import '../../../shared/models/university.dart';
-import '../../../shared/models/user_role.dart';
-import '../../admin/screens/admin_dashboard_screen.dart';
 
 class UniversityListScreen extends ConsumerWidget {
   const UniversityListScreen({super.key});
