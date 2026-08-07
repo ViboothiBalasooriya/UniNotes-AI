@@ -29,6 +29,34 @@ jobs:
         working-directory: ./uninotes_ai
         run: echo "MIDDLEWARE_BASE_URL=https://uninotes-ai.onrender.com" > .env
 
+      - name: Create google-services.json
+        working-directory: ./uninotes_ai/android/app
+        run: |
+          cat << 'EOF' > google-services.json
+          {
+            "project_info": {
+              "project_number": "694593027388",
+              "project_id": "uninotes-ai-89d4a",
+              "storage_bucket": "uninotes-ai-89d4a.firebasestorage.app"
+            },
+            "client": [
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:694593027388:android:bd9b8eaa3518656c9ab239",
+                  "android_client_info": {
+                    "package_name": "com.uninotesai.uninotes_ai"
+                  }
+                },
+                "api_key": [
+                  {
+                    "current_key": "AIzaSyDFJ-WZsBGCYKRcJDZEg72a4Gbo6h8ywDw"
+                  }
+                ]
+              }
+            ]
+          }
+          EOF
+
       - name: Install Dependencies
         working-directory: ./uninotes_ai
         run: flutter pub get
