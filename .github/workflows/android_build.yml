@@ -1,0 +1,41 @@
+name: Build Android APK
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.0' # Use a stable version, or leave empty for latest stable
+          channel: 'stable'
+
+      - name: Install Dependencies
+        working-directory: ./uninotes_ai
+        run: flutter pub get
+
+      - name: Build APK
+        working-directory: ./uninotes_ai
+        run: flutter build apk --release
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: UniNotes-AI-Android-APK
+          path: uninotes_ai/build/app/outputs/flutter-apk/app-release.apk
