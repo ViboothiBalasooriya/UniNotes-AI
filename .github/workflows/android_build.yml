@@ -26,6 +26,10 @@ jobs:
           flutter-version: '3.19.0' # Use a stable version, or leave empty for latest stable
           channel: 'stable'
 
+      - name: Create .env file
+        working-directory: ./uninotes_ai
+        run: echo "MIDDLEWARE_BASE_URL=https://uninotes-ai.onrender.com" > .env
+
       - name: Install Dependencies
         working-directory: ./uninotes_ai
         run: flutter pub get
